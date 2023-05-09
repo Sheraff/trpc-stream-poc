@@ -11,13 +11,15 @@ export async function* parseJsonStream (readableStream) {
 		if (string === '{' || string === '}') {
 			continue
 		}
-		let i = 2
-		for (; i < 10; i++) {
+
+		// parsing index out of start of line "0":{...}
+		let i = 2 // start after first digit to save one iteration
+		for (; i < 6; i++) { // assumes index will never be longer than 4 digits
 			if (string[i] === '"') break
 		}
-		if (i === 9) throw new Error('Invalid JSON')
+		if (i === 5) throw new Error('Invalid JSON')
 
-		const index = Number(string.substring(1, i))
+		const index = string.substring(1, i)
 		const data = string.substring(i + 2)
 		yield [index, JSON.parse(data)]
 	}
